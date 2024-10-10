@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "482453224681",
+    "project_id": "splitmate-807bc",
+    "storage_bucket": "splitmate-807bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482453224681:android:9a1be7af2d34c534970478",
+        "android_client_info": {
+          "package_name": "com.example.splitmate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOkxVDZ-VDqloAk0e-gP4MirTj4I8I7uc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
