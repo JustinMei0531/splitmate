@@ -43,6 +43,7 @@ class PropertiesController extends GetxController {
           'propertyAddress': doc['address'],
           'imagePath': doc[
               'property_image_url'], // Assuming the image path is stored in Firestore
+          'propertyType': doc["property_type"]
         };
       }).toList();
     } catch (e) {

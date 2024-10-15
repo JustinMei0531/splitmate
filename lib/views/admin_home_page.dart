@@ -30,40 +30,40 @@ class AdminHomePage extends StatelessWidget {
           style: TextStyle(fontSize: 18.0),
         ),
       ),
-      body: IndexedStack(
-        index: 0,
-        children: [
-          DefaultTabController(
-            length: 3,
-            child: Scaffold(
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(48.0),
-                child: AppBar(
-                  backgroundColor: Colors.orange,
-                  bottom: const TabBar(
-                    tabs: [
-                      Tab(text: "Properties"),
-                      Tab(text: "Activity"),
-                      Tab(text: "Tenants"),
+      body: Obx(() => IndexedStack(
+            index: currentBarIndex.value,
+            children: [
+              DefaultTabController(
+                length: 3,
+                child: Scaffold(
+                  appBar: PreferredSize(
+                    preferredSize: const Size.fromHeight(48.0),
+                    child: AppBar(
+                      backgroundColor: Colors.orange,
+                      bottom: const TabBar(
+                        tabs: [
+                          Tab(text: "Properties"),
+                          Tab(text: "Activity"),
+                          Tab(text: "Tenants"),
+                        ],
+                        labelColor: Colors.black,
+                        indicatorColor: Colors.orange,
+                      ),
+                    ),
+                  ),
+                  body: TabBarView(
+                    children: [
+                      AdminPropertiesPage(),
+                      AdminActivityPage(),
+                      AllTenantsPage()
                     ],
-                    labelColor: Colors.black,
-                    indicatorColor: Colors.orange,
                   ),
                 ),
               ),
-              body: TabBarView(
-                children: [
-                  AdminPropertiesPage(),
-                  AdminActivityPage(),
-                  AllTenantsPage()
-                ],
-              ),
-            ),
-          ),
-          AdminServicePage(),
-          ProfilePage()
-        ],
-      ),
+              AdminServicePage(),
+              ProfilePage()
+            ],
+          )),
       drawer: Sidebar(
         username: userService.userInfo?["name"] ??
             "Unknown", // Fetching username from GetStorage
@@ -81,15 +81,15 @@ class AdminHomePage extends StatelessWidget {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: "Home",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.bolt),
-              label: 'Services',
+              icon: Icon(Icons.notifications),
+              label: "Notification",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              label: 'Profile',
+              label: "Profile",
             ),
           ],
           selectedItemColor: Colors.orange,

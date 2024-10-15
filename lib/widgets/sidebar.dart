@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:get/get.dart";
 import "package:splitmate/controllers/sidebar_controller.dart";
-import "package:splitmate/utils/avatar_utils.dart";
+import "package:splitmate/services/user_service.dart";
 
 class Sidebar extends StatelessWidget {
   String username;
@@ -16,6 +16,8 @@ class Sidebar extends StatelessWidget {
       super.key});
 
   final SidebarController sidebarController = Get.put(SidebarController());
+
+  final UserService userService = Get.find<UserService>();
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +73,8 @@ class Sidebar extends StatelessWidget {
             title: "Logout",
             onTap: () {
               Get.offAllNamed("/login");
+              userService.clearUserData();
+              return;
             },
           ),
           const Padding(

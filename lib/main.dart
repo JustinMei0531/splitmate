@@ -7,6 +7,7 @@ import "package:splitmate/views/admin_home_page.dart";
 import "package:splitmate/views/login_page.dart";
 import "package:splitmate/views/apply_page.dart";
 import "package:splitmate/views/input_email_page.dart";
+import "package:splitmate/views/property_details_page.dart";
 import "package:splitmate/views/reset_password_page.dart";
 import "package:splitmate/views/splash_screen.dart";
 import "package:splitmate/views/user_home_page.dart";
@@ -35,6 +36,7 @@ class App extends StatelessWidget {
         GetPage(name: "/activate", page: () => UserActivationPage()),
         GetPage(name: "/admin-home", page: () => AdminHomePage()),
         GetPage(name: "/update-profile", page: () => UpdateProfilePage()),
+        GetPage(name: "/property-detail", page: () => PropertyDetailsPage()),
       ],
     );
   }

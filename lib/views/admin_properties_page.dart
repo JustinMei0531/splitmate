@@ -37,6 +37,7 @@ class AdminPropertiesPage extends StatelessWidget {
               servicesList: property['servicesList'],
               propertyAddress: property['propertyAddress'],
               imagePath: property['imagePath'],
+              propertyType: property["propertyType"],
             );
           },
         );

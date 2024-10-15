@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../utils/validation_utils.dart';
 import '../../services/user_service.dart';
@@ -32,8 +31,7 @@ class LoginController extends GetxController {
   // Inject UserService
   final UserService _userService = Get.find<UserService>();
 
-  // Firebase instances
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -104,71 +102,74 @@ class LoginController extends GetxController {
 
       debugPrint('Attempting to log in with email: $email'); // Debug log
 
-      // Sign in with Firebase Authentication
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      // Check if the email and password exist in Firestore
+      QuerySnapshot userSnapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .where('password', isEqualTo: password)
+          .get();
 
-      debugPrint(
-          'Login successful for user: ${userCredential.user?.email}'); // Debug log
+      if (userSnapshot.docs.isNotEmpty) {
+        DocumentSnapshot userDoc = userSnapshot.docs.first;
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
 
-      if (userCredential.user != null) {
-        // Fetch user data from Firestore
-        DocumentSnapshot userDoc = await _firestore
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .get();
+        debugPrint('Login successful for user: ${userData['email']}');
 
-        if (userDoc.exists) {
-          debugPrint('User data fetched successfully'); // Debug log
+        // Retrieve the role field from Firestore
+        int role = userData['role'] ?? 0; // Default role is 0 (regular user)
+        bool isFirstLogin = userData['first_login'] ?? true;
 
-          // Retrieve the role field from Firestore
-          Map<String, dynamic> userData =
-              userDoc.data() as Map<String, dynamic>;
-          int role = userData['role'] ?? 0; // Default role is 0 (regular user)
-          bool isFirstLogin = userData['first_login']!;
-
-          if (isFirstLogin) {
-            Get.offAllNamed("/activate");
-            return;
-          }
-
-          // Save user information locally
-          _userService.saveUserInfo(userData);
-
-          Get.snackbar(
-            "Success",
-            "Login successful.",
-            icon: const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Icon(
-                Icons.verified,
-                color: Colors.green,
-                size: 30.0,
-              ),
-            ),
-            padding: const EdgeInsets.all(15.0),
-          );
-
-          // Navigate to different pages based on role
-          switch (role) {
-            case 1: // Admin
-              Get.offAllNamed("/admin-home");
-              break;
-            default: // Regular user
-              Get.offAllNamed("/user-home");
-          }
-        } else {
-          debugPrint('User document not found in Firestore'); // Debug log
-          Get.snackbar("Error", "User information not found in Firestore.");
+        if (isFirstLogin) {
+          Get.offAllNamed("/activate");
+          return;
         }
+
+        // Save user information locally
+        _userService.saveUserInfo(userData);
+
+        Get.snackbar(
+          "Success",
+          "Login successful.",
+          icon: const Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Icon(
+              Icons.verified,
+              color: Colors.green,
+              size: 30.0,
+            ),
+          ),
+          padding: const EdgeInsets.all(15.0),
+        );
+
+        // Navigate to different pages based on role
+        switch (role) {
+          case 1: // Admin
+            Get.offAllNamed("/admin-home");
+            break;
+          default: // Regular user
+            Get.offAllNamed("/user-home");
+        }
+      } else {
+        // No user found with the provided email and password
+        Get.snackbar(
+          "Error",
+          "Invalid email or password.",
+          icon: const Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+              size: 30.0,
+            ),
+          ),
+          padding: const EdgeInsets.all(15.0),
+        );
       }
-    } on FirebaseAuthException catch (e) {
-      debugPrint('FirebaseAuthException: ${e.message}'); // Debug log
+    } catch (e) {
+      debugPrint('Error logging in: $e'); // Debug log
       Get.snackbar(
         "Login Error",
-        e.message ?? "An error occurred during login.",
+        "An error occurred during login. Please try again.",
         icon: const Padding(
           padding: EdgeInsets.all(10.0),
           child: Icon(Icons.error, color: Colors.red, size: 30.0),

@@ -80,14 +80,14 @@ class ApplyController extends GetxController {
       if (userCredential.user != null) {
         String userId = userCredential.user!.uid;
 
-        // Add user data to Firestore users collection
+        // Add user data to Firestore users collection with a list of properties
         await _firestore.collection('users').doc(userId).set({
           'uid': userId,
           'name': name,
           'email': email,
           'role': 0, // Role 0 for tenants
           'avatar_url': '',
-          'property_id': propertyId,
+          'properties_list': [propertyId], // Add property to the list
           'createdAt': FieldValue.serverTimestamp(),
           'first_login': true, // Mark as first login
         });

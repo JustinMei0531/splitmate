@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:get/get.dart";
 
 class AdminPropertyCard extends StatelessWidget {
   final String propertyName;
@@ -13,6 +14,8 @@ class AdminPropertyCard extends StatelessWidget {
 
   final double rent;
 
+  final String propertyType;
+
   AdminPropertyCard(
       {required this.rent,
       required this.propertyName,
@@ -20,6 +23,7 @@ class AdminPropertyCard extends StatelessWidget {
       required this.servicesList,
       required this.propertyAddress,
       required this.imagePath,
+      required this.propertyType,
       super.key});
 
   @override
@@ -30,22 +34,31 @@ class AdminPropertyCard extends StatelessWidget {
       children: <Widget>[
         InkWell(
             borderRadius: BorderRadius.circular(10.0),
-            onTap: () {},
+            onTap: () {
+              Get.toNamed("/property-detail", arguments: {
+                "propertyName": propertyName,
+                "tenantCount": tenantCount.toString(),
+                "propertyAddress": propertyAddress,
+                "imagePath": imagePath
+              });
+            },
             child: Card(
                 margin: const EdgeInsets.all(0.0),
                 child: Row(
                   children: [
                     Container(
-                      alignment: Alignment.center,
-                      height: scHeight * 0.8 / 5,
-                      width: scHeight * 0.8 / 5,
-                      color: Colors.grey.shade200,
-                      child: const Text("Image cap"),
-                    ),
+                        alignment: Alignment.center,
+                        height: scHeight * 0.8 / 5,
+                        width: scHeight * 0.8 / 5,
+                        color: Colors.grey.shade200,
+                        child: Image.network(
+                          imagePath,
+                          fit: BoxFit.fitWidth,
+                        )),
                     const SizedBox(
                       width: 10.0,
                     ),
-                    Container(
+                    SizedBox(
                       height: scHeight * 0.8 / 5,
                       width: scWidth - scHeight * 0.9 / 5,
                       child: Column(
